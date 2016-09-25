@@ -1,0 +1,44 @@
+config:
+    # select a master setting for Vagrant
+    use: 'master_environment'
+    master_environment:
+        # Ubuntu Trusty 14.04 by Default.
+        base_box: 'ubuntu/trusty64'
+        memory: 1024
+        cpus: 1
+        ip: 192.168.4.110
+        # the port you will access the VM from on the Host of localhost. i.e localhost:8866
+        access_port: '8868' # Your OS
+        guest_port: '80' # Virtual Machine Guest. Default port 80 is blocked when not sudo.
+        # Access this URL locally w/o need for port on host ONLY if guest_port is 80. Other wise you will need port.
+        hostname: 'podtest8868.dev'
+        # Sync Host and Guest Machine folders.
+        synced_folder:
+          # Host is relative to where Vagrantfile is.
+          host: 'www'
+          # guest is relative to where VM root is.
+          guest: '/vagrant/www'
+        # these get attached to each commit. Can be project specific, but this is so user can get to developing right after VM is up.
+        git_user_name: 'YOUR_USERNAME'
+        git_user_email: 'YOUR_EMAIL'
+    # a_different_master_environment:
+    #     # Ubuntu Trusty 14.04 by Default.
+    #     base_box: 'ubuntu/trusty64'
+    #     memory: 1024
+    #     cpus: 2
+    #     ip: 192.168.4.109
+    #     # the port you will access the VM from on the Host of localhost. i.e localhost:8866
+    #     access_port: '8866'
+    #     # Access this URL locally w/o need for port.
+    #     hostname: 'somewhere.local'
+    #     # Sync Host and Guest Machine folders.
+    #     synced_folder:
+    #       # Host is relative to where Vagrantfile is.
+    #       host: 'somewhere_else'
+    #       # guest is relative to where VM root is.
+    #       guest: '/vagrant/somewhere_else'
+    #     # these get attached to each commit. Can be project specific, but this is so user can get to developing right after VM is up.
+    #     git_user_name: 'YOUR_USERNAME'
+    #     git_user_email: 'YOUR_EMAIL'
+ 
+    #   < Add more projects as needed if base_box or Vagrant settings are different >
