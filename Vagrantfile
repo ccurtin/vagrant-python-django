@@ -97,10 +97,40 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", privileged: true, inline: <<-SHELL
     sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
   SHELL
-  # run script to improve PS1 prompt. Display virtualenv and current branch(*)
-  config.vm.provision :shell, :privileged => true, :path => "./bootstrap/better_ps1.sh"
-  # run script to quickly add Python/Django environments
-  config.vm.provision :shell, :privileged => true, :path => "./bootstrap/init_python_project.sh"
+  
+  # it is IMPORTANT that this is NOT run as root, but by the user "vagrant" with privileged commands.
+  # Bootstrap folder is owned and accessible by "vagrant" user. Otherwise unable to copy bootstrap files over to VM bin.
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+    # import Colors variables.
+    sudo touch /bin/colors
+    sudo chmod a+x /bin/colors
+    sudo cp /vagrant/bootstrap/colors.sh /bin/colors
+    sudo sed -i 's/\r//' /bin/colors
+    
+    # run script to improve PS1 prompt. Display virtualenv and current branch(*)
+    sudo touch /bin/better_ps1
+    sudo chmod a+x /bin/better_ps1
+    sudo cp /vagrant/bootstrap/better_ps1.sh /bin/better_ps1
+    sudo sed -i 's/\r//' /bin/better_ps1
+    
+    # run script to quickly add Python/Django environments
+    sudo touch /bin/init_python_env
+    sudo chmod a+x /bin/init_python_env
+    sudo cp /vagrant/bootstrap/init_python_env.sh /bin/init_python_env
+    sudo sed -i 's/\r//' /bin/init_python_env
+    
+    sudo touch /bin/manage_django_db
+    sudo chmod a+x /bin/manage_django_db
+    sudo cp /vagrant/bootstrap/manage_django_db.sh /bin/manage_django_db
+    sudo sed -i 's/\r//' /bin/manage_django_db
+    
+    sudo touch /bin/manage_django_db_postgres
+    sudo chmod a+x /bin/manage_django_db_postgres
+    sudo cp /vagrant/bootstrap/manage_django_db_postgres.sh /bin/manage_django_db_postgres
+    sudo sed -i 's/\r//' /bin/manage_django_db_postgres
+
+  SHELL
+
   # run Shell commands, passing config variables to script.
   config.vm.provision :shell, :path => "./bootstrap/bootstrap.sh", :args => [
                                                                             vagrant_config['synced_folder']['host'],
@@ -108,5 +138,6 @@ Vagrant.configure(2) do |config|
                                                                             vagrant_config['git_user_name'],
                                                                             vagrant_config['git_user_email']
                                                                           ]
+
 
 end

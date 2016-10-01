@@ -1,21 +1,18 @@
 #!/bin/bash
-sudo touch /bin/better_ps1
-sudo chmod +x /bin/better_ps1
-echo '#!/bin/bash
 # Thanks to Jeff Hull for this!
 # Colors 
-RED="'"\[\033[31m\]"'"
-GREEN="'"\[\033[32m\]"'"
-YELLOW="'"\[\033[33m\]"'"
-BLUE="'"\[\033[34m\]"'"
-PURPLE="'"\[\033[35m\]"'"
-CYAN="'"\[\033[36m\]"'"
-WHITE="'"\[\033[37m\]"'"
-NIL="'"\[\033[00m\]"'"
+RED='\[\033[31m\]'
+GREEN='\[\033[32m\]'
+YELLOW='\[\033[33m\]'
+BLUE='\[\033[34m\]'
+PURPLE='\[\033[35m\]'
+CYAN='\[\033[36m\]'
+WHITE='\[\033[37m\]'
+NIL='\[\033[00m\]'
 
 # Hostname styles
-FULL="'"\H"'"
-SHORT="'"\h"'"
+FULL='\H'
+SHORT='\h'
 
 # System => color/hostname map:
 # UC: username color
@@ -74,4 +71,3 @@ function set_prompt() {
 }
 
 export PROMPT_COMMAND=set_prompt
-' >> /bin/better_ps1.sh

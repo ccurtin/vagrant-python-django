@@ -6,12 +6,12 @@ config:
         base_box: 'ubuntu/trusty64'
         memory: 1024
         cpus: 1
-        ip: 192.168.4.110
+        ip: 192.168.4.124
         # the port you will access the VM from on the Host of localhost. i.e localhost:8866
-        access_port: '8868' # Your OS
+        access_port: '8879' # Your OS
         guest_port: '80' # Virtual Machine Guest. Default port 80 is blocked when not sudo.
         # Access this URL locally w/o need for port on host ONLY if guest_port is 80. Other wise you will need port.
-        hostname: 'podtest8868.dev'
+        hostname: 'podtest8879.dev'
         # Sync Host and Guest Machine folders.
         synced_folder:
           # Host is relative to where Vagrantfile is.
@@ -19,8 +19,8 @@ config:
           # guest is relative to where VM root is.
           guest: '/vagrant/www'
         # these get attached to each commit. Can be project specific, but this is so user can get to developing right after VM is up.
-        git_user_name: 'YOUR_USERNAME'
-        git_user_email: 'YOUR_EMAIL'
+        git_user_name: 'twchris'
+        git_user_email: 'chris@twowords.co'
     # a_different_master_environment:
     #     # Ubuntu Trusty 14.04 by Default.
     #     base_box: 'ubuntu/trusty64'
