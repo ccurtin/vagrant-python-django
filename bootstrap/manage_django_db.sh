@@ -25,7 +25,7 @@ PS3="Select A Database Engine to Use: "
     do
         case $db_engine in
             postgresql)
-            sudo manage_django_db_postgres postgresql
+            . manage_django_db_postgres postgresql
             break 
             ;;
             mysql)

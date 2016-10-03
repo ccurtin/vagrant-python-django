@@ -1,8 +1,6 @@
 #!/bin/bash
 source /bin/colors
 
-THE_ALIAS
-
 ### CHECK PYTHON MODULES ARE INSTALLED ###
 function check_module(){
     python -c "import ${1}" 2> /dev/null
@@ -46,10 +44,10 @@ function change_your_dir(){
 }
 
 
-make_user(){
+function make_user(){
     echo "Enter a password for $NEW_DB_USER: "
     read -s NEW_DB_PASS
-    sudo -u postgres psql -tAc "CREATE USER $NEW_DB_USER WITH PASSWORD '$NEW_DB_USER';"
+    sudo -u postgres psql -tAc "CREATE USER $NEW_DB_USER WITH PASSWORD '$NEW_DB_PASS';"
 }
 
 function assign_privs(){
@@ -88,42 +86,42 @@ function update_data()
 
     case ${1} in
         db_alias)
-        if [ -z ${2+x} ]; then
-            DB_ALIAS='default'
-        else
-            DB_ALIAS=${2}
-        fi
-        echo -e ${BGREEN}using ALIAS: $DB_ALIAS ${NIL}
-        ;;
-        engine)
-        sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'ENGINE':/{s/\s\+'ENGINE':.*/'ENGINE': 'django.db.backends.postgresql',/g}; t loop; /}/{s/\s\+}.*/'ENGINE': 'django.db.backends.postgresql',\\n },/}; t loop; b moop} ;b loop}" settings.py
-        autopep8 --in-place --aggressive --aggressive settings.py
-        ;;
-        name)
-        DB_NAME=${2}
-        sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'NAME':/{s/\s\+'NAME':.*/'NAME': '${2}',/g}; t loop; /}/{s/\s\+}.*/'NAME': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
-        autopep8 --in-place --aggressive --aggressive settings.py
-        ;;
-        user)
-        DB_USER=${2}
-        sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'USER':/{s/\s\+'USER':.*/'USER': '${2}',/g}; t loop; /}/{s/\s\+}.*/'USER': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
-        autopep8 --in-place --aggressive --aggressive settings.py
-        ;;
-        password)
-        sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'PASSWORD':/{s/\s\+'PASSWORD':.*/'PASSWORD': '${2}',/g}; t loop; /}/{s/\s\+}.*/'PASSWORD': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
-        autopep8 --in-place --aggressive --aggressive settings.py
-        ;;
-        host)
-        DB_HOST=${2}
-        sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS}'/{:moop n; /'HOST':/{s/\s\+'HOST':.*/'HOST': '${2}',/g}; t loop; /}/{s/\s\+}.*/'HOST': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
-        autopep8 --in-place --aggressive --aggressive settings.py
-        ;;
-        port)
-        DB_PORT=${2}
-        sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'PORT':/{s/\s\+'PORT':.*/'PORT': '${2}',/g}; t loop; /}/{s/\s\+}.*/'PORT': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
-        autopep8 --in-place --aggressive --aggressive settings.py
-        ;;
-    esac
+if [ -z ${2+x} ]; then
+    DB_ALIAS='default'
+else
+    DB_ALIAS=${2}
+fi
+echo -e ${BGREEN}using ALIAS: $DB_ALIAS ${NIL}
+;;
+engine)
+sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'ENGINE':/{s/\s\+'ENGINE':.*/'ENGINE': 'django.db.backends.postgresql',/g}; t loop; /}/{s/\s\+}.*/'ENGINE': 'django.db.backends.postgresql',\\n },/}; t loop; b moop} ;b loop}" settings.py
+autopep8 --in-place --aggressive --aggressive settings.py
+;;
+name)
+DB_NAME=${2}
+sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'NAME':/{s/\s\+'NAME':.*/'NAME': '${2}',/g}; t loop; /}/{s/\s\+}.*/'NAME': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
+autopep8 --in-place --aggressive --aggressive settings.py
+;;
+user)
+DB_USER=${2}
+sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'USER':/{s/\s\+'USER':.*/'USER': '${2}',/g}; t loop; /}/{s/\s\+}.*/'USER': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
+autopep8 --in-place --aggressive --aggressive settings.py
+;;
+password)
+sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'PASSWORD':/{s/\s\+'PASSWORD':.*/'PASSWORD': '${2}',/g}; t loop; /}/{s/\s\+}.*/'PASSWORD': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
+autopep8 --in-place --aggressive --aggressive settings.py
+;;
+host)
+DB_HOST=${2}
+sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS}'/{:moop n; /'HOST':/{s/\s\+'HOST':.*/'HOST': '${2}',/g}; t loop; /}/{s/\s\+}.*/'HOST': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
+autopep8 --in-place --aggressive --aggressive settings.py
+;;
+port)
+DB_PORT=${2}
+sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'PORT':/{s/\s\+'PORT':.*/'PORT': '${2}',/g}; t loop; /}/{s/\s\+}.*/'PORT': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
+autopep8 --in-place --aggressive --aggressive settings.py
+;;
+esac
 
 }
 
@@ -150,7 +148,7 @@ function continue_update_app_settings(){
     update_data db_alias $THE_ALIAS
     update_data engine postgres
     ### DATABASE NAME
-    enter_db_name(){
+    function enter_db_name(){
         read -e -i "$NEW_DB" -p "Database to connect to: " DB_NAME
         if [ -z ${DB_NAME} ]; then
             echo -e ${RED}Invalid Input${NIL}
@@ -160,7 +158,7 @@ function continue_update_app_settings(){
         fi
     }
     ### DATABASE USER
-    enter_db_user(){
+    function enter_db_user(){
         read -e -i "$NEW_DB_USER" -p "Enter USER to connect to $DB_NAME: " DB_USER
         if [ -z ${DB_USER} ]; then
             echo -e ${RED}Invalid Input${NIL}
@@ -170,23 +168,23 @@ function continue_update_app_settings(){
         fi
     }
     ### DATABASE PASSWORD
-    enter_db_pass(){
+    function enter_db_pass(){
 #        read -p "Auto-import password? [y/n] " prompt
 #        if [[ ${prompt,,} =~ ^(yes|y)$ ]]; then
 #            update_data password $NEW_DB_PASS
 #        else
-            echo "Enter the PASSWORD for $DB_USER: "
-            read -s DB_PASS
-            if [ -z ${DB_PASS} ]; then
-                echo -e ${RED}Invalid Input${NIL}
-                enter_db_pass
-            else
-                update_data password $DB_PASS
-            fi      
+echo "Enter the PASSWORD for $DB_USER: "
+read -s DB_PASS
+if [ -z ${DB_PASS} ]; then
+    echo -e ${RED}Invalid Input${NIL}
+    enter_db_pass
+else
+    update_data password $DB_PASS
+fi      
 #        fi
-    }
+}
     ### DATABASE HOST
-    enter_db_host(){
+    function enter_db_host(){
         read -e -i 'localhost' -p "HOST for $DB_NAME: " DB_HOST
         if [ -z ${DB_HOST} ]; then
             echo -e ${RED}Invalid Input${NIL}
@@ -196,7 +194,7 @@ function continue_update_app_settings(){
         fi
     }
     ### DATABASE PORT
-    enter_db_port(){
+    function enter_db_port(){
         read -e -i '5432' -p "PORT for $DB_HOST: " DB_PORT
         if [ -z ${DB_PORT} ]; then
             echo -e ${RED}Invalid Input${NIL}
@@ -218,10 +216,15 @@ function continue_update_app_settings(){
 ### RUN THE SETUP ###
 
 # installed required dependencies
-check_package postgresql
+check_package postgresql-9.3
 check_package postgresql-client-common
 check_package libpq-dev
-# check_module psycopg2
+# is needed to compile Python extension written in C ot C++, ie: psycopg2
+# JUST INSTALL THIS TOO FOR NOW! EVENTUALLY NEED TO FIX THIS.
+check_package python3-dev
+# USER MAY NEED A DIFFERENT VERSION OF python-dev, ie: 'python3.4-dev'
+check_package python-dev
+check_module psycopg2
 check_package python-psycopg2
 # Setup user and privs, 
 read -p "Database User: " NEW_DB_USER

@@ -42,7 +42,7 @@ fi
 
 # Allow virtualenvs for self-contained Python environments.
 sudo apt-get install -y python-virtualenv
-sudo pip install virtualenvs
+sudo pip install virtualenv
 sudo pip install virtualenvwrapper
 sudo pip install autoenv
 
@@ -56,7 +56,7 @@ curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-pro
 echo "source /bin/.git-prompt.sh" >> /etc/bash.bashrc
 
 # add to new PS1 prompt to bashrc
-echo "source /bin/better_ps1.sh" >> /etc/bash.bashrc
+echo "source /bin/better_ps1" >> /etc/bash.bashrc
 
 # Must write to /etc/bash.bashrc and NOT ~/.bashrc or ~/.bash_profile so that environments work for sudo and unprivileged users.
 echo "WORKON_HOME=/vagrant/${1%/}/" >> /etc/bash.bashrc

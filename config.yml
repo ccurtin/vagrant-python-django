@@ -6,12 +6,13 @@ config:
         base_box: 'ubuntu/trusty64'
         memory: 1024
         cpus: 1
-        ip: 192.168.4.124
+        ip: 192.168.4.126
         # the port you will access the VM from on the Host of localhost. i.e localhost:8866
-        access_port: '8879' # Your OS
+        access_port: '80' # Your OS
         guest_port: '80' # Virtual Machine Guest. Default port 80 is blocked when not sudo.
-        # Access this URL locally w/o need for port on host ONLY if guest_port is 80. Other wise you will need port.
-        hostname: 'podtest8879.dev'
+        # accessing "localhost/" would be akin to "http://podtest8880.dev:8888"
+        # Apache runs on port 80 by default. Read the readme to change ports.
+        hostname: 'podtest8888.dev'
         # Sync Host and Guest Machine folders.
         synced_folder:
           # Host is relative to where Vagrantfile is.

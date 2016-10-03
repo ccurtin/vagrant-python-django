@@ -35,6 +35,7 @@ Vagrant.configure(2) do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "http://localhost:{vagrant_config['access_port']}" will access port 80 on the guest machine
   config.vm.network "forwarded_port", guest: vagrant_config['guest_port'], host: vagrant_config['access_port'], :netmask => "255.255.0.0"
+  config.vm.network "forwarded_port", guest: 8080, host: 8080, :netmask => "255.255.0.0"
 
   config.vm.hostname = vagrant_config['hostname']
   # Create a private network, which allows host-only access to the machine using a specific IP.
@@ -128,6 +129,11 @@ Vagrant.configure(2) do |config|
     sudo chmod a+x /bin/manage_django_db_postgres
     sudo cp /vagrant/bootstrap/manage_django_db_postgres.sh /bin/manage_django_db_postgres
     sudo sed -i 's/\r//' /bin/manage_django_db_postgres
+    
+    sudo touch /bin/setup_phppgadmin
+    sudo chmod a+x /bin/setup_phppgadmin
+    sudo cp /vagrant/bootstrap/setup_phppgadmin.sh /bin/setup_phppgadmin
+    sudo sed -i 's/\r//' /bin/setup_phppgadmin
 
   SHELL
 

@@ -1,19 +1,33 @@
 # Vagrant-Python-Django VM
 
 A Vagrantfile utilizing Ubuntu 14.04/Trusty to get you started with self-contained Python/Django projects quickly via VirtualEnv.
-Create contained environments within the VM via `. init_python_env [PROJECT_NAME] [PYTHON_VER] [DJANGO_VER]`
+Create contained environments within the VM via `. init_python_env`
 
-## Installation
+## Installation (succinct)
   - install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)(_recommended_) or VMWare for [MAC](https://my.vmware.com/web/vmware/info?slug=desktop_end_user_computing/vmware_fusion/8_0), [Windows](http://www.vmware.com/products/workstation.html) or [Linux](http://www.vmware.com/products/workstation-for-linux.html) on your host machine.
   - install [Vagrant](https://www.vagrantup.com/downloads.html) on your host machine.
   - edit `config.yml` to setup network, CPU and folder sync configurations.
   - run `vagrant up` to setup the VM.
+  - run `. init_python_env` and answer the prompts to create a new python environment with Django install optional.
+  - running the previous command will run you through an entirely automated setup, configuring a database, the selected engine, a user and privileges, will update your Django settings, etc. Just fill out the prompts. ** CURRENTLY ONLY SUPPORTS POSTGRESQL ** More DBMS will be added in the future.
+  - Quickly and easily create basic database configurations so you can spend more time working on what you care about. From within a Django project folder, run `manage_django_db`.
+
+
+# TO DO:
+  in `manage_django_db_postgres.sh` when installing psycopg2, need to first automatically install the _correct_ version of the `python-dev` package.
+
+## NOTES:
+  #### PostgreSQL
+  - Defaults to PostgreSQL 9.3
+  - The default settings will run Django on port 80 and Apache on 8080.
+    - To change the port Django runs on run: `python manage.py runserver [::]:YOUR_NEW_PORT` in a Django project.
+    - To change the port(s) Apache runs on edit: `vim /etc/apache2/ports.conf` and `vim /etc/apache2/sites-available/000-default.conf`. Then restart Apache `sudo /etc/init.d/apache2 restart`
 
 ## Usage
 
   - login to machine `vagarnt ssh` and run `sudo su` for privileged commands. (virtualenvwrapper will create necessary files in the root sync folder )
   - make sure you are in the synced_folder directory before running the command below. Default directory here is: `/vagrant/www/`
-  - run the command `. init_python_env [PROJECT_NAME] [PYTHON_VERSION] [DJANGO_VERSION]` to create a new Python Environment so projects/packages are contained. **All python environments will be initialized in the synced_folder (`/vagrant/www/` by default). Notice the preceding period. This will automatically cd into the project directory after setup.**
+  - run the command `. init_python_env` to create a new Python Environment so projects/packages are contained. **All python environments will be initialized in the synced_folder (`/vagrant/www/` by default). Notice the preceding period. This will automatically cd into the project directory after setup is complete.**
   - VirtualEnv is _not_ a VM container, it is simply to create self-contained python environments. Think of it as a sandbox, not a full fledged VM. Plus, we already have the VM!
   - Run `python -V` and `django-admin --version` to make sure everything checked out.
   - run `deactivate` to exit virtualenv environment or `workon [PROJECT_NAME]` to activate it. Alternatively, just navigate to the project folder to activate the environment.
