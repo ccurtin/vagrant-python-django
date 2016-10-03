@@ -12,7 +12,7 @@ config:
         guest_port: '80' # Virtual Machine Guest. Default port 80 is blocked when not sudo.
         # accessing "localhost/" would be akin to "http://podtest8880.dev:8888"
         # Apache runs on port 80 by default. Read the readme to change ports.
-        hostname: 'podtest8888.dev'
+        hostname: 'local.dev'
         # Sync Host and Guest Machine folders.
         synced_folder:
           # Host is relative to where Vagrantfile is.
@@ -20,8 +20,8 @@ config:
           # guest is relative to where VM root is.
           guest: '/vagrant/www'
         # these get attached to each commit. Can be project specific, but this is so user can get to developing right after VM is up.
-        git_user_name: 'twchris'
-        git_user_email: 'chris@twowords.co'
+        git_user_name: 'YOUR_GITHUB_USERNAME'
+        git_user_email: 'YOUR_GITHUB_EMAIL'
     # a_different_master_environment:
     #     # Ubuntu Trusty 14.04 by Default.
     #     base_box: 'ubuntu/trusty64'

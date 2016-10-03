@@ -34,6 +34,6 @@ if [[ ! -z $DJANGO_VERSION ]]; then
 
     read -p "Setup a New Database For Your Project? [y/n] " prompt
     if [[ ${prompt,,} =~ ^(yes|y)$ ]]; then
-        . manage_djagno_db
+        . manage_django_db
     fi
 fi
