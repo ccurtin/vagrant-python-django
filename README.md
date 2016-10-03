@@ -23,9 +23,9 @@ Create contained environments within the VM via `. init_python_env`
   - Defaults to PostgreSQL 9.3
   - Default settings run Apache on port 8080, needed for phpPgAdmin web interface.
   - To change the port(s) Apache runs on edit the following:
-  ..* `vim /etc/apache2/ports.conf`
-  ..* `vim /etc/apache2/sites-available/000-default.conf`
-  ..* Then restart Apache `sudo /etc/init.d/apache2 restart`
+    ..* `vim /etc/apache2/ports.conf`
+    ..* `vim /etc/apache2/sites-available/000-default.conf`
+    ..* Then restart Apache `sudo /etc/init.d/apache2 restart`
 
 ## Usage
 
