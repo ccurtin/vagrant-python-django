@@ -21,11 +21,11 @@ Create contained environments within the VM via `. init_python_env`
   - To change the port Django runs on just run: `python manage.py runserver [::]:YOUR_NEW_PORT` in a Django project and that port will be accessible via the `hostname` entered in the `config.yml` file.
 ### PostgreSQL
   - Defaults to PostgreSQL 9.3
-  -Default settings run Apache on port 8080, needed for phpPgAdmin web interface.
+  - Default settings run Apache on port 8080, needed for phpPgAdmin web interface.
     - To change the port(s) Apache runs on edit the following:
-      - `vim /etc/apache2/ports.conf`
-      - `vim /etc/apache2/sites-available/000-default.conf`
-      - Then restart Apache `sudo /etc/init.d/apache2 restart`
+    ..* `vim /etc/apache2/ports.conf`
+    ..* `vim /etc/apache2/sites-available/000-default.conf`
+    ..* Then restart Apache `sudo /etc/init.d/apache2 restart`
 
 ## Usage
 
