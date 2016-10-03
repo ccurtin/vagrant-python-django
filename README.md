@@ -17,11 +17,15 @@ Create contained environments within the VM via `. init_python_env`
   in `manage_django_db_postgres.sh` when installing psycopg2, need to first automatically install the _correct_ version of the `python-dev` package.
 
 ## NOTES:
+  - The default settings will run Django on port 80
+  - To change the port Django runs on just run: `python manage.py runserver [::]:YOUR_NEW_PORT` in a Django project and that port will be accessible via the `hostname` entered in the `config.yml` file.
 ### PostgreSQL
   - Defaults to PostgreSQL 9.3
-  - The default settings will run Django on port 80 and Apache on 8080.
-    - To change the port Django runs on run: `python manage.py runserver [::]:YOUR_NEW_PORT` in a Django project.
-    - To change the port(s) Apache runs on edit: `vim /etc/apache2/ports.conf` and `vim /etc/apache2/sites-available/000-default.conf`. Then restart Apache `sudo /etc/init.d/apache2 restart`
+  -Default settings run Apache on port 8080, needed for phpPgAdmin web interface.
+    - To change the port(s) Apache runs on edit the following:
+      - `vim /etc/apache2/ports.conf`
+      - `vim /etc/apache2/sites-available/000-default.conf`
+      - Then restart Apache `sudo /etc/init.d/apache2 restart`
 
 ## Usage
 
