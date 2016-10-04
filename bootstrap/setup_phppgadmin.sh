@@ -12,7 +12,7 @@ sudo service apache2 reload
 # enable user "postgres" to login
 sudo sed -i "s/\s*\$conf\['extra_login_security'\] = true;/        \$conf\['extra_login_security'\] = false;/" /etc/phppgadmin/config.inc.php
 # Update port 80 to port 8080
-sudo sed -i "s/Listen 80\s+/Listen 8080/" /etc/apache2/ports.conf
+sudo sed -i "s/Listen 80\s*/Listen 8080/" /etc/apache2/ports.conf
 sudo sed -i "s/:80>/:8080>/" /etc/apache2/sites-available/000-default.conf
 sudo /etc/init.d/apache2 restart
 

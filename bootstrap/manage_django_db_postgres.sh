@@ -229,7 +229,7 @@ check_package postgresql-client-common
 check_package libpq-dev
 # is needed to compile Python extension written in C ot C++, ie: psycopg2
 # JUST INSTALL THIS TOO FOR NOW! EVENTUALLY NEED TO FIX THIS.
-check_package python3-dev
+# check_package python3-dev
 # USER MAY NEED A DIFFERENT VERSION OF python-dev, ie: 'python3.4-dev'
 check_package python-dev
 check_module psycopg2
