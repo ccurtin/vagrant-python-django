@@ -17,7 +17,8 @@ function check_module(){
 
 ### CHECK LINUX PACKAGES ARE INSTALLED ###
 function check_package(){
-    dpkg -l ${1} &> /dev/null
+    # find package status with -s flag
+    dpkg -s ${1} &> /dev/null
     INSTALLED=$?
     if [ $INSTALLED == 1 ]; then
         echo -e ${BYELLOW}
@@ -228,10 +229,10 @@ check_package postgresql-9.3
 check_package postgresql-client-common
 check_package libpq-dev
 # is needed to compile Python extension written in C ot C++, ie: psycopg2
-# JUST INSTALL THIS TOO FOR NOW! EVENTUALLY NEED TO FIX THIS.
-# check_package python3-dev
-# USER MAY NEED A DIFFERENT VERSION OF python-dev, ie: 'python3.4-dev'
 check_package python-dev
+# USER MAY NEED A DIFFERENT VERSION OF python-dev, ie: 'python3.4-dev'
+# JUST INSTALL THIS TOO FOR NOW! EVENTUALLY NEED TO FIX THIS.
+check_package python3-dev
 check_module psycopg2
 check_package python-psycopg2
 # Setup user and privs, 
