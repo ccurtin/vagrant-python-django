@@ -3,13 +3,18 @@
 A Vagrantfile utilizing Ubuntu 14.04/Trusty to get you started with self-contained Python/Django projects quickly via VirtualEnv.
 Create contained environments within the VM via `. init_python_env`
 
-## Installation (succinct)
+## Installation
   - install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)(_recommended_) or VMWare for [MAC](https://my.vmware.com/web/vmware/info?slug=desktop_end_user_computing/vmware_fusion/8_0), [Windows](http://www.vmware.com/products/workstation.html) or [Linux](http://www.vmware.com/products/workstation-for-linux.html) on your host machine.
   - install [Vagrant](https://www.vagrantup.com/downloads.html) on your host machine.
   - edit `config.yml` to setup network, CPU and folder sync configurations.
   - run `vagrant up` to setup the VM.
-  - run `. init_python_env` and answer the prompts to create a new python environment with Django install optional.
-  - running the previous command will run you through an entirely automated setup, configuring a database, the selected engine, a user and privileges, will update your Django settings, etc. Just fill out the prompts. ** CURRENTLY ONLY SUPPORTS POSTGRESQL ** More DBMS will be added in the future.
+  - After setup is done, run  `vagrant ssh` and then `sudo su` to login as root user.
+  - change the current directory to your projects root `cd /vagrant/www/` or whatever you named the guest `sync_folder` in `config.yml`
+  - run `. init_python_env` **(Notice the preceding period!)** and answer the prompts to create a new python environment with Django install optional.
+  - if you'd like to setup PgAdmin web interface, just run the command `setup_phppgadmin`
+  - when running `startserver`, or manage.py's runserver, if you receive and error related to psycopg2, make sure you install `python-dev` for you current version of python, e.g `python-dev3.4`. After running `sudo apt-get install python-devX.X`, install psycopg2, via pip. `pip install psycopg2` and be sure that your project is activated before installing these.
+
+  - running `init_python_env` will run you through an entirely automated setup, configuring a database, the selected engine, a user and privileges, will update your Django settings, etc. Just fill out the prompts. ** CURRENTLY ONLY SUPPORTS POSTGRESQL ** More DBMS will be added in the future.
   - Quickly and easily create basic database configurations so you can spend more time working on what you care about. From within a Django project folder, run `manage_django_db`.
 
 
