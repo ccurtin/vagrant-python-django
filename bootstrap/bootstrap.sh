@@ -52,13 +52,15 @@ sudo pip install autoenv
 
 curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o /bin/.git-prompt.sh
 
+# Must write below to /etc/bash.bashrc and NOT ~/.bashrc or ~/.bash_profile 
+# so that environments work for sudo AND unprivileged users.
+# 
 # Load in the git branch prompt script.
 echo "source /bin/.git-prompt.sh" >> /etc/bash.bashrc
 
 # add to new PS1 prompt to bashrc
 echo "source /bin/better_ps1" >> /etc/bash.bashrc
-
-# Must write to /etc/bash.bashrc and NOT ~/.bashrc or ~/.bash_profile so that environments work for sudo and unprivileged users.
+# `WORKON_HOME` tells virtualenvwrapper where to place your virtual environments
 echo "WORKON_HOME=/vagrant/${1%/}/" >> /etc/bash.bashrc
 echo 'source /usr/local/bin/virtualenvwrapper.sh' >> /etc/bash.bashrc
 echo 'source /usr/local/bin/activate.sh' >> /etc/bash.bashrc

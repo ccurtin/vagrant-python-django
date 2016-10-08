@@ -52,7 +52,7 @@ function make_user(){
 }
 
 function assign_privs(){
-    echo -e "${BYELLOW}Type Terms separated by spaces: \nmore at: https://www.postgresql.org/docs/9.1/static/sql-alterrole.html\n${NIL}"
+    echo -e "${BYELLOW}Type Terms separated by spaces: \nmore at: https://www.postgresql.org/docs/current/static/sql-alterrole.html\n${NIL}"
     read -p "Assign privilegs to $NEW_DB_USER: " -e -i "SUPERUSER CREATEROLE CREATEDB REPLICATION" NEW_DB_PRIV
 
     for PRIV in $NEW_DB_PRIV; do
@@ -78,7 +78,7 @@ function configure_md5_login(){
     echo -e ${BYELLOW}Update password for user "postgres"${NIL}
     # Create a new password for user "postgres"
     sudo -u postgres psql -tAc "\password postgres"
-    sudo sed -i "s/\s*local\s*all\s*all\s*peer/local                  all               all                   md5/" /etc/postgresql/9.3/main/pg_hba.conf
+    sudo sed -i "s/\s*local\s*all\s*all\s*peer/local                  all               all                   md5/" /etc/postgresql/*/main/pg_hba.conf
     sudo service postgresql restart
 }
 
@@ -222,10 +222,33 @@ function continue_update_app_settings(){
 
 }
 
+#
+#
 ### RUN THE SETUP ###
+#
+#
 
+# conditionally add in the apt repository.
+# 
+if [[ ! -f /etc/apt/sources.list.d/posrgresql.list ]]; then
+    # add the postgreSQL repository
+    sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/posrgresql.list'
+    # import GPG key from repo so validity checks out.
+    wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | sudo apt-key add -
+    # update the package list.
+    sudo apt-get update
+fi
+
+# specify postgresql version to install. Latest stable release is default.
+echo -e  "${BYELLOW}Enter a PostgreSQL Version to install \n${YELLOW}(the default is the ${GREEN}\"current\"${YELLOW} release)${NIL} "
+read -p ": " -e -i "current" POSTGRESQL_VERSION
+
+if [ $POSTGRESQL_VERSION == 'current' ]; then
+    check_package postgresql
+else
+    check_package postgresql-$POSTGRESQL_VERSION
+fi
 # installed required dependencies
-check_package postgresql-9.3
 check_package postgresql-client-common
 check_package libpq-dev
 # is needed to compile Python extension written in C ot C++, ie: psycopg2
