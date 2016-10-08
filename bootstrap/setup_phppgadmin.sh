@@ -1,7 +1,7 @@
 #!/bin/bash
 source /bin/colors
 # INSTALL PHPPGADMIN
-sudo apt-get install phppgadmin
+sudo apt-get install phppgadmin -y
 # configure Apache server to tell it where to find phppgadmin.
 sudo echo 'Include /etc/apache2/conf.d/phppgadmin' >>  /etc/apache2/apache2.conf
 # allow permission to access phppgadmin.
