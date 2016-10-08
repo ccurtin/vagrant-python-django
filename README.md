@@ -38,18 +38,18 @@ Create contained environments within the VM via `. init_python_env`
   - Then restart Apache `sudo /etc/init.d/apache2 restart`
 
 ## Usage
-  - login to machine `vagrant ssh` and run `sudo su` for privileged commands. (virtualenvwrapper will create necessary files in the root sync folder )
-  - make sure you are in the synced_folder directory before running the command below. Default directory here is: `/vagrant/www/`
-  - run the command `. init_python_env` to create a new Python Environment so projects/packages are contained. **All python environments will be initialized in the synced_folder (`/vagrant/www/` by default). Notice the preceding period. This will automatically cd into the project directory after setup is complete.**
   - VirtualEnv is _not_ a VM container, it is simply to create self-contained python environments. Think of it as a sandbox, not a full fledged VM. Plus, we already have the VM!
+  - `cd` into the synced_folder and run the command `. init_python_env` to create a new Python Environment so projects/packages are contained. **All python environments will be initialized in the synced_folder (`/vagrant/www/` by default). Notice the preceding period.**
+  - Be aware that self-contained Python Environments does ***NOT*** mean self-contained Database Environments. Future releases may take this into account through porting.
   - Run `python -V` and `django-admin --version` to make sure everything checked out.
-  - run `deactivate` to exit virtualenv environment or `workon [PROJECT_NAME]` to activate it. Alternatively, just navigate to the project folder to activate the environment.
-  - do not change project folder names, as it may cause issues.
-  - when you run the server in Django via `python manage.py runserver [::]:80`, note that you may now access the Django project on your Host Machine via the `hostname` entered in your config file.
-  - the PS1 prompt is set up to let you know which virtualenv you are working with and what branch you are actively on.
-  - although these projects are contained in the webserver's root(for folder sync reasons), do not upload any of your Python files into the web document root in production environments, for security's sake.
+  - run `deactivate` to exit virtualenv environment or `workon [PROJECT_NAME]` to activate it. Alternatively, whenever you navigate into a project folder, the virtual environment will become activated.
+  - the PS1 prompt is set up to let you know which virtualenv you are working with and what branch you are actively on when a git repo is there.
+  - If you are switching between many Python Environments and/or Django Projects, be absolutely sure that your active environment( which is assigned in the PS1) is the one you want to install packages and modules on.
+  - do not change Django Project folder names, as it may cause issues. Python Environments in the root directory may be renamed if needed though.
+  - although these projects are placed in the webserver's root(for folder sync reasons), do not upload any of your Python files into the web document root in _production environments_, for security's sake.
 
 ## TO DO
+##### Smaller To Dos
   - Let user define PostgreSQL port when running `manage_django_db`. Edit `sed` `/etc/postgresql/9.3/main/postgresql.conf` port=5432. Might want to create a sepatate shell file or method, to scan `/etc/postgresql/` for versions and ask which to update... `sed` return change before confirm and restart service.
   - reconfigure `configure_md5_login` in `manage_django_db_postgres` shouldn't be automatically run, only once or manually.
   - in `manage_django_db_postgres` when installing psycopg2, need to first automatically install the _correct_ version of the `python-dev` package. Note to self: grab `which python` and loop through versions, popping off version number until match is met. Use method `check_package`
@@ -57,7 +57,10 @@ Create contained environments within the VM via `. init_python_env`
   - don't force any ports for a DBMS'. Let user configure any ports in `config.yml`
     - update apache
     - update PostgreSQL
-    
+
+##### Bigger To Dos
+  - create a utility that installs necessary dependencies to run gulp/grunt tasks for Django Projects.
+    - also create task-runner templates for projects... `init_taskrunner` >>> `gulp`...running. Maybe best to package it all up into one command so no separate install takes place; just run prior checks when `init_taskrunner` or similar. Setup BrowserSync, PostCSS, Autoprefixer, SourceMaps, Uglify, etc.  
 
 ## Useful Commands
 #### General VM CPU Info
