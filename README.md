@@ -4,36 +4,40 @@ A Vagrantfile utilizing Ubuntu 14.04/Trusty to get you started with self-contain
 Create contained environments within the VM via `. init_python_env`
 
 ## Installation
+#### Prerequisites
   - install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)(_recommended_) or VMWare for [MAC](https://my.vmware.com/web/vmware/info?slug=desktop_end_user_computing/vmware_fusion/8_0), [Windows](http://www.vmware.com/products/workstation.html) or [Linux](http://www.vmware.com/products/workstation-for-linux.html) on your host machine.
   - install [Vagrant](https://www.vagrantup.com/downloads.html) on your host machine.
-  - edit `config.yml` to setup network, CPU and folder sync configurations.
-  - run `vagrant up` to setup the VM.
-  - After setup is done, run  `vagrant ssh` and then `sudo su` to login as root user.
-  - change the current directory to your projects root `cd /vagrant/www/` or whatever you named the guest `sync_folder` in `config.yml`
-  - run `. init_python_env` **(Notice the preceding period!)** and answer the prompts to create a new python environment with Django install optional.
-  - if you'd like to setup PgAdmin web interface, just run the command `setup_phppgadmin`
-  - when running `startserver`, or manage.py's runserver, if you receive and error related to psycopg2, make sure you install `python-dev` for you current version of python, e.g `python-dev3.4`. After running `sudo apt-get install python-devX.X`, install psycopg2, via pip. `pip install psycopg2` and be sure that your project is activated before installing these.
 
-  - running `init_python_env` will run you through an entirely automated setup, configuring a database, the selected engine, a user and privileges, will update your Django settings, etc. Just fill out the prompts. ** CURRENTLY ONLY SUPPORTS POSTGRESQL ** More DBMS will be added in the future.
-  - Quickly and easily create basic database configurations so you can spend more time working on what you care about. From within a Django project folder, run `manage_django_db`.
+#### Configure Virtual Machine(VM) Settings
+  edit `config.yml` to setup network, CPU and folder-sync configurations.
 
+#### Logging Into Your VM
+  - `vagrant up` to setup and initialize the VM. ( only the first time you run `vagrant up` will take long 5-10 mins )
+  - After the VM is initialized, run `vagrant ssh` and then `sudo su` to login as the root user.
+  - change the current directory to your projects root by typing `cd $WORKON_HOME`
 
-## TO DO:
-  in `manage_django_db_postgres.sh` when installing psycopg2, need to first automatically install the _correct_ version of the `python-dev` package.
+#### Create a Contained Python Environment
+  `. init_python_env` **(Notice the preceding period!)** Django install is optional.
 
-## NOTES:
+#### Setup PgAdmin Web interface (phpPgAdmin)
+`setup_phppgadmin`
+
+#### Setting Up a New Database For A Django Project 
+  `manage_django_db`. Switch to a Django Project Folder before running. This will create a new user, alter their role, create a new database, and assign them to a DB. If you just want to assign roles and not create new users/DBs, that works too. Running this command will also automatically update the django `settings.py` file for your project. ** CURRENTLY ONLY SUPPORTS POSTGRESQL ** More DBMS will be added in the future.
+
+## Notes to User:
   - The default settings will run Django on port 80
   - To change the port Django runs on just run: `python manage.py runserver [::]:YOUR_NEW_PORT` in a Django project and that port will be accessible via the `hostname` entered in the `config.yml` file.
-### PostgreSQL
-  - Defaults to PostgreSQL 9.3
-  - Default settings run Apache on port 8080, needed for phpPgAdmin web interface.
-  - To change the port(s) Apache runs on edit the following:
-    - `vim /etc/apache2/ports.conf`
-    - `vim /etc/apache2/sites-available/000-default.conf`
-    - Then restart Apache `sudo /etc/init.d/apache2 restart`
+
+#### PostgreSQL Notes
+- Defaults to latest stable version PostgreSQL
+- Default settings run Apache on port 8080, needed for phpPgAdmin web interface.
+- To change the port(s) Apache runs on edit the following:
+  - `vim /etc/apache2/ports.conf`
+  - `vim /etc/apache2/sites-available/000-default.conf`
+  - Then restart Apache `sudo /etc/init.d/apache2 restart`
 
 ## Usage
-
   - login to machine `vagrant ssh` and run `sudo su` for privileged commands. (virtualenvwrapper will create necessary files in the root sync folder )
   - make sure you are in the synced_folder directory before running the command below. Default directory here is: `/vagrant/www/`
   - run the command `. init_python_env` to create a new Python Environment so projects/packages are contained. **All python environments will be initialized in the synced_folder (`/vagrant/www/` by default). Notice the preceding period. This will automatically cd into the project directory after setup is complete.**
@@ -44,6 +48,16 @@ Create contained environments within the VM via `. init_python_env`
   - when you run the server in Django via `python manage.py runserver [::]:80`, note that you may now access the Django project on your Host Machine via the `hostname` entered in your config file.
   - the PS1 prompt is set up to let you know which virtualenv you are working with and what branch you are actively on.
   - although these projects are contained in the webserver's root(for folder sync reasons), do not upload any of your Python files into the web document root in production environments, for security's sake.
+
+## TO DO
+  - Let user define PostgreSQL port when running `manage_django_db`. Edit `sed` `/etc/postgresql/9.3/main/postgresql.conf` port=5432. Might want to create a sepatate shell file or method, to scan `/etc/postgresql/` for versions and ask which to update... `sed` return change before confirm and restart service.
+  - reconfigure `configure_md5_login` in `manage_django_db_postgres` shouldn't be automatically run, only once or manually.
+  - in `manage_django_db_postgres` when installing psycopg2, need to first automatically install the _correct_ version of the `python-dev` package. Note to self: grab `which python` and loop through versions, popping off version number until match is met. Use method `check_package`
+  - when selecting a DBMS for project, also accept a DBMS version number for each. eg: `"Select which engine you'd like to use: 1,2,4,5,6"; user selects #1 postgresql and then prompt them for version to install; create warnings if DMBS already installed.`
+  - don't force any ports for a DBMS'. Let user configure any ports in `config.yml`
+    - update apache
+    - update PostgreSQL
+    
 
 ## Useful Commands
 #### General VM CPU Info
@@ -65,8 +79,9 @@ Create contained environments within the VM via `. init_python_env`
 
 ## Issues
   - Be sure that Python and Django versions are compatible together when installing both at the same time.
+  - when running `startserver`,or `python manage.py runserver [::]:80`, **if you receive and error related to psycopg2**, make sure you install the python-dev for your **active** version of python, e.g `pytho3.4-dev`. After running `sudo apt-get install pythonX.X-dev`, install the psycopg2 python module via pip by making sure you virtualenv is active and entering `pip install psycopg2`.
 
-Please [open an issue](https://github.com/ccurtin/vagrant-python-django/issues/new) for support.
+  Please [open an issue](https://github.com/ccurtin/vagrant-python-django/issues/new) for support.
 
 ## Contributing
 
