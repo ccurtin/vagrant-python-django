@@ -1,6 +1,6 @@
 #!/bin/bash
 source /bin/colors
-
+source /etc/bash.bashrc
 ### CHECK PYTHON MODULES ARE INSTALLED ###
 function check_module(){
     python -c "import ${1}" 2> /dev/null
@@ -33,6 +33,7 @@ function check_package(){
 function change_your_dir(){
 
     if [ ! -f $PWD/settings.py ]; then
+        echo -e "${BYELLOW} Let's update the Django Settings File...${NIL}" 
         echo -e ${RED}
         echo -e " Select a project's ${BRED}main app folder${RED} first!\n ${YELLOW}(where the ${BWHITE}settings.py${YELLOW} file lives.${NIL})\n"
         echo -e ${NIL}
@@ -48,7 +49,14 @@ function change_your_dir(){
 function make_user(){
     echo "Enter a password for $NEW_DB_USER: "
     read -s NEW_DB_PASS
-    sudo -u postgres psql -tAc "CREATE USER $NEW_DB_USER WITH PASSWORD '$NEW_DB_PASS';"
+    echo "Enter it again: "
+    read -s NEW_DB_PASS_CONFIRM
+    if [ $NEW_DB_PASS != $NEW_DB_PASS_CONFIRM ]; then
+        echo -e "${BRED}passwords do not match!${NIL}"
+        make_user
+    else
+        sudo -u postgres psql -tAc "CREATE USER $NEW_DB_USER WITH PASSWORD '$NEW_DB_PASS';"
+    fi
 }
 
 function assign_privs(){
@@ -80,13 +88,17 @@ function configure_md5_login(){
     sudo -u postgres psql -tAc "\password postgres"
     sudo sed -i "s/\s*local\s*all\s*all\s*peer/local                  all               all                   md5/" /etc/postgresql/*/main/pg_hba.conf
     sudo service postgresql restart
+    sudo sh -c ' echo "export POSTGRES_PASS=configured" >> /etc/bash.bashrc'
+    exec $SHELL
 }
 
 function update_app_settings(){
 
     change_your_dir
     continue_update_app_settings ${1}
-    configure_md5_login
+    if [ -z "$POSTGRES_PASS" ]; then
+        configure_md5_login
+    fi
 }
 
 ### USER INPUT METHODS ###
@@ -102,31 +114,31 @@ function update_data(){
         echo -e ${BGREEN}using ALIAS: $DB_ALIAS ${NIL}
         ;;
         engine)
-        sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'ENGINE':/{s/\s\+'ENGINE':.*/'ENGINE': 'django.db.backends.postgresql',/g}; t loop; /}/{s/\s\+}.*/'ENGINE': 'django.db.backends.postgresql',\\n },/}; t loop; b moop} ;b loop}" settings.py
+        sudo sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'ENGINE':/{s/\s\+'ENGINE':.*/'ENGINE': 'django.db.backends.postgresql',/g}; t loop; /}/{s/\s\+}.*/'ENGINE': 'django.db.backends.postgresql',\\n },/}; t loop; b moop} ;b loop}" settings.py
         autopep8 --in-place --aggressive --aggressive settings.py
         ;;
         name)
         DB_NAME=${2}
-        sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'NAME':/{s/\s\+'NAME':.*/'NAME': '${2}',/g}; t loop; /}/{s/\s\+}.*/'NAME': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
+        sudo sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'NAME':/{s/\s\+'NAME':.*/'NAME': '${2}',/g}; t loop; /}/{s/\s\+}.*/'NAME': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
         autopep8 --in-place --aggressive --aggressive settings.py
         ;;
         user)
         DB_USER=${2}
-        sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'USER':/{s/\s\+'USER':.*/'USER': '${2}',/g}; t loop; /}/{s/\s\+}.*/'USER': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
+        sudo sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'USER':/{s/\s\+'USER':.*/'USER': '${2}',/g}; t loop; /}/{s/\s\+}.*/'USER': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
         autopep8 --in-place --aggressive --aggressive settings.py
         ;;
         password)
-        sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'PASSWORD':/{s/\s\+'PASSWORD':.*/'PASSWORD': '${2}',/g}; t loop; /}/{s/\s\+}.*/'PASSWORD': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
+        sudo sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'PASSWORD':/{s/\s\+'PASSWORD':.*/'PASSWORD': '${2}',/g}; t loop; /}/{s/\s\+}.*/'PASSWORD': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
         autopep8 --in-place --aggressive --aggressive settings.py
         ;;
         host)
         DB_HOST=${2}
-        sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'HOST':/{s/\s\+'HOST':.*/'HOST': '${2}',/g}; t loop; /}/{s/\s\+}.*/'HOST': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
+        sudo sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'HOST':/{s/\s\+'HOST':.*/'HOST': '${2}',/g}; t loop; /}/{s/\s\+}.*/'HOST': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
         autopep8 --in-place --aggressive --aggressive settings.py
         ;;
         port)
         DB_PORT=${2}
-        sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'PORT':/{s/\s\+'PORT':.*/'PORT': '${2}',/g}; t loop; /}/{s/\s\+}.*/'PORT': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
+        sudo sed -i "/^DATABASES/ {:loop n; /'$DB_ALIAS'/{:moop n; /'PORT':/{s/\s\+'PORT':.*/'PORT': '${2}',/g}; t loop; /}/{s/\s\+}.*/'PORT': '${2}',\\n },/}; t loop; b moop} ;b loop}" settings.py
         autopep8 --in-place --aggressive --aggressive settings.py
         ;;
     esac
@@ -143,13 +155,13 @@ function continue_update_app_settings(){
     read -e -i 'default' -p 'Enter the database ALIAS youd like to edit: ' THE_ALIAS
 
     # output to a temp file
-    sed -n '/DATABASES*/,/# Password validation/p' settings.py >> tmp_alias_generator.txt
+    TEST_ALIAS=$(sudo sed -n '/DATABASES*/,/# Password validation/p' settings.py)
     # check if exact match exists.
-    grep -Fxq "    '$THE_ALIAS': {" tmp_alias_generator.txt
+    echo "$TEST_ALIAS" | grep -q "    '$THE_ALIAS': {"
     ALIAS_EXISTS=$?
     # create if it doesnt exist
     if [ $ALIAS_EXISTS == 1 ]; then
-        sed -i "/DATABASES = {/{s/.*/DATABASES = {\n'$THE_ALIAS': {\n},/}" settings.py
+        sudo sed -i "/DATABASES = {/{s/.*/DATABASES = {\n'$THE_ALIAS': {\n},/}" settings.py
         autopep8 --in-place --aggressive --aggressive settings.py
 
     fi

@@ -19,7 +19,8 @@ function check_module() {
 # for formatting the settings.py file.
 check_module autopep8
 
-PS3="Select A Database Engine to Use: "
+echo -e "${BYELLOW}Select A Database Engine to Use: ${NIL}"
+PS3="Enter a corresponding number: "
 
     select db_engine in postgresql mysql sqlite3 oracle SKIP
     do

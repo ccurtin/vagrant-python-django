@@ -1,7 +1,7 @@
 # Vagrant-Python-Django VM
 
 A Vagrantfile utilizing Ubuntu 14.04/Trusty to get you started with self-contained Python/Django projects quickly via VirtualEnv.
-Create contained environments within the VM via `. init_python_env`
+Create contained environments within the VM via `init_python_env`
 
 ## Installation
 #### Prerequisites
@@ -13,17 +13,17 @@ Create contained environments within the VM via `. init_python_env`
 
 #### Logging Into Your VM
   - `vagrant up` to setup and initialize the VM. ( only the first time you run `vagrant up` will take long 5-10 mins )
-  - After the VM is initialized, run `vagrant ssh` and then `sudo su` to login as the root user.
+  - After the VM is initialized, run `vagrant ssh`
   - change the current directory to your projects root by typing `cd $WORKON_HOME`
 
 #### Create a Contained Python Environment
-  `. init_python_env` **(Notice the preceding period!)** Django install is optional.
+  `init_python_env`. Installing Django is optional.
 
 #### Setup PgAdmin Web interface (phpPgAdmin)
 `setup_phppgadmin`
 
 #### Setting Up a New Database For A Django Project 
-  `manage_django_db`. Switch to a Django Project Folder before running. This will create a new user, alter their role, create a new database, and assign them to a DB. If you just want to assign roles and not create new users/DBs, that works too. Running this command will also automatically update the django `settings.py` file for your project. ** CURRENTLY ONLY SUPPORTS POSTGRESQL ** More DBMS will be added in the future.
+  `manage_django_db`. **Switch to a Django Project Folder before running**. This will create a new user, alter their role, create a new database, and assign them to a DB. If you just want to assign roles and not create new users/DBs, that works too. Running this command will also automatically update the django `settings.py` file for your project. ** CURRENTLY ONLY SUPPORTS POSTGRESQL ** More DBMS will be added in the future.
 
 ## Notes to User:
   - The default settings will run Django on port 80
@@ -33,13 +33,13 @@ Create contained environments within the VM via `. init_python_env`
 - Defaults to latest stable version PostgreSQL
 - Default settings run Apache on port 8080, needed for phpPgAdmin web interface.
 - To change the port(s) Apache runs on edit the following:
-  - `vim /etc/apache2/ports.conf`
-  - `vim /etc/apache2/sites-available/000-default.conf`
+  - `sudo vim /etc/apache2/ports.conf`
+  - `sudo vim /etc/apache2/sites-available/000-default.conf`
   - Then restart Apache `sudo /etc/init.d/apache2 restart`
 
 ## Usage
   - VirtualEnv is _not_ a VM container, it is simply to create self-contained python environments. Think of it as a sandbox, not a full fledged VM. Plus, we already have the VM!
-  - `cd` into the synced_folder and run the command `. init_python_env` to create a new Python Environment so projects/packages are contained. **All python environments will be initialized in the synced_folder (`/vagrant/www/` by default). Notice the preceding period.**
+  - `cd` into the synced_folder and run the command `init_python_env` to create a new Python Environment so projects/packages are contained. **All python environments will be initialized in the synced_folder (`/vagrant/www/` by default).**
   - Be aware that self-contained Python Environments does ***NOT*** mean self-contained Database Environments. Future releases may take this into account through porting.
   - Run `python -V` and `django-admin --version` to make sure everything checked out.
   - run `deactivate` to exit virtualenv environment or `workon [PROJECT_NAME]` to activate it. Alternatively, whenever you navigate into a project folder, the virtual environment will become activated.

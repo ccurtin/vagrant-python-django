@@ -3,11 +3,11 @@ source /bin/colors
 # INSTALL PHPPGADMIN
 sudo apt-get install phppgadmin -y
 # configure Apache server to tell it where to find phppgadmin.
-sudo echo 'Include /etc/apache2/conf.d/phppgadmin' >>  /etc/apache2/apache2.conf
+echo 'Include /etc/apache2/conf.d/phppgadmin'| sudo tee --append /etc/apache2/apache2.conf
 # allow permission to access phppgadmin.
-sed -i 's/^allow from 127.0.0.0\/255.0.0.0 ::1\/128/# allow from 127.0.0.0\/255.0.0.0 ::1\/128/' /etc/apache2/conf.d/phppgadmin
-sed -i 's/^#allow from all/allow from all/' /etc/apache2/conf.d/phppgadmin
-sed -i 's/^# allow from all/allow from all/' /etc/apache2/conf.d/phppgadmin
+sudo sed -i 's/^allow from 127.0.0.0\/255.0.0.0 ::1\/128/# allow from 127.0.0.0\/255.0.0.0 ::1\/128/' /etc/apache2/conf.d/phppgadmin
+sudo sed -i 's/^#allow from all/allow from all/' /etc/apache2/conf.d/phppgadmin
+sudo sed -i 's/^# allow from all/allow from all/' /etc/apache2/conf.d/phppgadmin
 sudo service apache2 reload
 # enable user "postgres" to login
 sudo sed -i "s/\s*\$conf\['extra_login_security'\] = true;/        \$conf\['extra_login_security'\] = false;/" /etc/phppgadmin/config.inc.php
