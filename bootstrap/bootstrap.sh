@@ -73,11 +73,5 @@ echo 'VIRTUALENVWRAPPER_VIRTUALENV=/usr/bin/virtualenv' >> /etc/bash.bashrc
 echo "SYNC_FOLDER=${1%/}" >> /etc/bash.bashrc
 echo "export SYNC_FOLDER=${1%/}" >> /etc/bash.bashrc
 
-
-# Lazy start server
-touch /bin/startserver
-chmod +x /bin/startserver
-echo "python manage.py runserver [::]:$2" >> /bin/startserver
-
 # Reload system environment variables so they are immediately available.
 source /etc/bash.bashrc

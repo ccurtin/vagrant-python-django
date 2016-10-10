@@ -113,6 +113,12 @@ Vagrant.configure(2) do |config|
     sudo chmod a+x /bin/better_ps1
     sudo cp /vagrant/bootstrap/better_ps1.sh /bin/better_ps1
     sudo sed -i 's/\r//' /bin/better_ps1
+
+    # Lazy `runserver`. Really to circumvent permission issue for port 80.
+    sudo touch /bin/startserver
+    sudo chmod a+x /bin/startserver
+    sudo cp /vagrant/bootstrap/startserver.sh /bin/startserver
+    sudo sed -i 's/\r//' /bin/startserver
     
     # run script to quickly add Python/Django environments
     sudo touch /bin/init_python_env
