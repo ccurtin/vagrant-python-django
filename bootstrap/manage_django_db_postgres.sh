@@ -1,6 +1,6 @@
 #!/bin/bash
 source /bin/colors
-source /etc/bash.bashrc
+source /etc/postgresql/9.6/main/pass_set
 ### CHECK PYTHON MODULES ARE INSTALLED ###
 function check_module(){
     python -c "import ${1}" 2> /dev/null
@@ -88,7 +88,9 @@ function configure_md5_login(){
     sudo -u postgres psql -tAc "\password postgres"
     sudo sed -i "s/\s*local\s*all\s*all\s*peer/local                  all               all                   md5/" /etc/postgresql/*/main/pg_hba.conf
     sudo service postgresql restart
-    sudo sh -c ' echo "export POSTGRES_PASS=configured" >> /etc/bash.bashrc'
+    sudo touch /etc/postgresql/9.6/main/pass_set
+    sudo chmod +x /etc/postgresql/9.6/main/pass_set
+    sudo sh -c ' echo "export POSTGRES_PASS=configured" >> /etc/postgresql/9.6/main/pass_set'
     exec $SHELL
 }
 
