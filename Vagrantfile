@@ -140,6 +140,11 @@ Vagrant.configure(2) do |config|
     sudo chmod a+x /bin/setup_phppgadmin
     sudo cp /vagrant/bootstrap/setup_phppgadmin.sh /bin/setup_phppgadmin
     sudo sed -i 's/\r//' /bin/setup_phppgadmin
+    
+    sudo touch /bin/update_apache_ports
+    sudo chmod a+x /bin/update_apache_ports
+    sudo cp /vagrant/bootstrap/update_apache_ports.sh /bin/update_apache_ports
+    sudo sed -i 's/\r//' /bin/update_apache_ports
 
   SHELL
 

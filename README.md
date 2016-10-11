@@ -31,11 +31,8 @@ Create contained environments within the VM via `init_python_env`
 
 #### PostgreSQL Notes
 - Defaults to latest stable version PostgreSQL
-- Default settings run Apache on port 8080, needed for phpPgAdmin web interface.
-- To change the port(s) Apache runs on edit the following:
-  - `sudo vim /etc/apache2/ports.conf`
-  - `sudo vim /etc/apache2/sites-available/000-default.conf`
-  - Then restart Apache `sudo /etc/init.d/apache2 restart`
+- Apache is required for phpPgAdmin web interface.
+- To change the port(s) Apache runs on, run the command `update_apache_ports`
 
 ## Usage
   - VirtualEnv is _not_ a VM container, it is simply to create self-contained python environments. Think of it as a sandbox, not a full fledged VM. Plus, we already have the VM!
@@ -55,7 +52,6 @@ Create contained environments within the VM via `init_python_env`
   - in `manage_django_db_postgres` when installing psycopg2, need to first automatically install the _correct_ version of the `python-dev` package. Note to self: grab `which python` and loop through versions, popping off version number until match is met. Use method `check_package`
   - when selecting a DBMS for project, also accept a DBMS version number for each. eg: `"Select which engine you'd like to use: 1,2,4,5,6"; user selects #1 postgresql and then prompt them for version to install; create warnings if DMBS already installed.`
   - don't force any ports for a DBMS'. Let user configure any ports in `config.yml`
-    - update apache
     - update PostgreSQL
 
 ##### Bigger To Dos
