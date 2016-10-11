@@ -17,10 +17,13 @@ function check_module(){
 
 ### CHECK LINUX PACKAGES ARE INSTALLED ###
 function check_package(){
-    # find package status with -s flag
+    # Note about BUG: using `-l` flag may return false-positives!
+    # find if a package is installed via the status flag `-s` instead.
     dpkg -s ${1} &> /dev/null
     INSTALLED=$?
-    if [ $INSTALLED == 1 ]; then
+    if [ ${1} == 'python-dev-AUTO' ]; then
+        install_python_dev
+    elif [ $INSTALLED == 1 ] && [ ${1} != 'python-dev-AUTO' ]; then
         echo -e ${BYELLOW}
         echo -e ${1} not found ${BGREEN}
         echo installing ${1}...
@@ -29,6 +32,23 @@ function check_package(){
     fi
 }
 
+function install_python_dev(){
+    # return active env python version. # eg: Python 3.4.3
+    FIND_PYTHON_VERSION=$(python --version 2>&1)
+    # isolate just the version #.
+    CURRENT_PYTHON_VERSION=$(echo $FIND_PYTHON_VERSION | sed -e 's/\<Python\>//g')
+    # since `python-dev` has many possibilities, define all, ie: 3.4, 3, and then fall back to 'python-dev' if no match found. 
+    POSSIBLE_MATCHES=("python${CURRENT_PYTHON_VERSION::-2}-dev" "python${CURRENT_PYTHON_VERSION::-4}-dev" "python-dev")
+    # for each possibility, check_package along with return value, and exit once proper version is installed.
+    for FIND_PY_DEV in "${POSSIBLE_MATCHES[@]}"
+    do
+        check_package ${FIND_PY_DEV}
+        dpkg -s ${FIND_PY_DEV} &> /dev/null
+        if [ $? == 0 ]; then
+            break;
+        fi
+    done
+}
 
 function change_your_dir(){
 
@@ -266,10 +286,8 @@ fi
 check_package postgresql-client-common
 check_package libpq-dev
 # is needed to compile Python extension written in C ot C++, ie: psycopg2
-check_package python-dev
-# USER MAY NEED A DIFFERENT VERSION OF python-dev, ie: 'python3.4-dev'
-# JUST INSTALL THIS TOO FOR NOW! EVENTUALLY NEED TO FIX THIS.
-check_package python3-dev
+# triggers auto-detection via deductions of `python --version`
+check_package python-dev-AUTO
 check_module psycopg2
 check_package python-psycopg2
 # Setup user and privs, 

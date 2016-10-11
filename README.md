@@ -1,7 +1,8 @@
 # Vagrant-Python-Django VM
 
-A Vagrantfile utilizing Ubuntu 14.04/Trusty to get you started with self-contained Python/Django projects quickly via VirtualEnv.
-Create contained environments within the VM via `init_python_env`
+Get started with self-contained Python/Django projects quickly. Create contained environments within the VM via `init_python_env` and administer and swap between environments, projects and DBMS quickly and with ease!
+
+**CURRENTLY ONLY SUPPORTS POSTGRESQL for DMBS**
 
 ## Installation
 #### Prerequisites
@@ -23,9 +24,10 @@ Create contained environments within the VM via `init_python_env`
 `setup_phppgadmin`
 
 #### Setting Up a New Database For A Django Project 
-  `manage_django_db`. **Switch to a Django Project Folder before running**. This will create a new user, alter their role, create a new database, and assign them to a DB. If you just want to assign roles and not create new users/DBs, that works too. Running this command will also automatically update the django `settings.py` file for your project. ** CURRENTLY ONLY SUPPORTS POSTGRESQL ** More DBMS will be added in the future.
+  `manage_django_db`. **Switch to a Django Project Folder before running**. This will create a new user, alter their role, create a new database, and assign them to a DB. If you just want to assign roles and not create new users/DBs, that works too. Running this command will also automatically update the django `settings.py` file for your project. More DBMS will be added in the future.
 
 ## Notes to User:
+  - Feel free to change up the base-box OS, but note this has only been tested with Ubuntu 14.04/Trusty.
   - The default settings will run Django on port 80
   - To change the port Django runs on just run: `python manage.py runserver [::]:YOUR_NEW_PORT` in a Django project and that port will be accessible via the `hostname` entered in the `config.yml` file.
 
@@ -49,11 +51,10 @@ Create contained environments within the VM via `init_python_env`
 ##### Smaller To Dos
   - Let user define PostgreSQL port when running `manage_django_db`. Edit `sed` `/etc/postgresql/9.3/main/postgresql.conf` port=5432. Might want to create a sepatate shell file or method, to scan `/etc/postgresql/` for versions and ask which to update... `sed` return change before confirm and restart service.
   - reconfigure `configure_md5_login` in `manage_django_db_postgres` shouldn't be automatically run, only once or manually.
-  - in `manage_django_db_postgres` when installing psycopg2, need to first automatically install the _correct_ version of the `python-dev` package. Note to self: grab `which python` and loop through versions, popping off version number until match is met. Use method `check_package`
-  - when selecting a DBMS for project, also accept a DBMS version number for each. eg: `"Select which engine you'd like to use: 1,2,4,5,6"; user selects #1 postgresql and then prompt them for version to install; create warnings if DMBS already installed.`
   - don't force any ports for a DBMS'. Let user configure any ports in `config.yml`
     - update PostgreSQL
-
+  - Organize the Installation section in the README for each individual DBMS. Have a "General Installation" then sub-headings for each DMBS, explaining extensions, commands, configurations, etc.
+  
 ##### Bigger To Dos
   - create a utility that installs necessary dependencies to run gulp/grunt tasks for Django Projects.
     - also create task-runner templates for projects... `init_taskrunner` >>> `gulp`...running. Maybe best to package it all up into one command so no separate install takes place; just run prior checks when `init_taskrunner` or similar. Setup BrowserSync, PostCSS, Autoprefixer, SourceMaps, Uglify, etc.  
@@ -75,10 +76,6 @@ Create contained environments within the VM via `init_python_env`
   - if you'd to only export the _local_ packages within the virtualenv environment, use the `-l` flag. `pip freeze -l > requirements.txt`
   - to install these packages within a different environment: `pip install -r requirements.txt`
   - run `vagrant share` on the HOST machine to share your project(s) with the world. For development and Q/A only. Be careful with sensitive data before proceeding. You can even use your own domain to share projects: http://projectname.yourwebsite.com
-
-## Issues
-  - Be sure that Python and Django versions are compatible together when installing both at the same time.
-  - when running `startserver`,or `python manage.py runserver [::]:80`, **if you receive and error related to psycopg2**, make sure you install the python-dev for your **active** version of python, e.g `pytho3.4-dev`. After running `sudo apt-get install pythonX.X-dev`, install the psycopg2 python module via pip by making sure you virtualenv is active and entering `pip install psycopg2`.
 
   Please [open an issue](https://github.com/ccurtin/vagrant-python-django/issues/new) for support.
 
