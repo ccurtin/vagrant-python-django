@@ -1,6 +1,6 @@
 #!/bin/bash
 source /bin/colors
-source /etc/postgresql/9.6/main/pass_set
+source /etc/postgresql/v-p-d/pass_set
 ### CHECK PYTHON MODULES ARE INSTALLED ###
 function check_module(){
     python -c "import ${1}" 2> /dev/null
@@ -12,7 +12,7 @@ function check_module(){
         echo -e ${NIL}
         pip install ${1}
         # echo -e ${BGREEN}" ${successfully downloaded} # SHOULD _ACTUALLY_ check stderr to see if it DID successfully download!
-    fi 
+    fi
 }
 
 ### CHECK LINUX PACKAGES ARE INSTALLED ###
@@ -37,7 +37,7 @@ function install_python_dev(){
     FIND_PYTHON_VERSION=$(python --version 2>&1)
     # isolate just the version #.
     CURRENT_PYTHON_VERSION=$(echo $FIND_PYTHON_VERSION | sed -e 's/\<Python\>//g')
-    # since `python-dev` has many possibilities, define all, ie: 3.4, 3, and then fall back to 'python-dev' if no match found. 
+    # since `python-dev` has many possibilities, define all, ie: 3.4, 3, and then fall back to 'python-dev' if no match found.
     POSSIBLE_MATCHES=("python${CURRENT_PYTHON_VERSION::-2}-dev" "python${CURRENT_PYTHON_VERSION::-4}-dev" "python-dev")
     # for each possibility, check_package along with return value, and exit once proper version is installed.
     for FIND_PY_DEV in "${POSSIBLE_MATCHES[@]}"
@@ -51,9 +51,8 @@ function install_python_dev(){
 }
 
 function change_your_dir(){
-
     if [ ! -f $PWD/settings.py ]; then
-        echo -e "${BYELLOW} Let's update the Django Settings File...${NIL}" 
+        echo -e "${BYELLOW} Let's update the Django Settings File...${NIL}"
         echo -e ${RED}
         echo -e " Select a project's ${BRED}main app folder${RED} first!\n ${YELLOW}(where the ${BWHITE}settings.py${YELLOW} file lives.${NIL})\n"
         echo -e ${NIL}
@@ -103,29 +102,27 @@ function assign_user_to_db(){
 }
 
 function configure_md5_login(){
-    echo -e ${BYELLOW}Update password for user "postgres"${NIL}
-    # Create a new password for user "postgres"
-    sudo -u postgres psql -tAc "\password postgres"
-    sudo sed -i "s/\s*local\s*all\s*all\s*peer/local                  all               all                   md5/" /etc/postgresql/*/main/pg_hba.conf
-    sudo service postgresql restart
-    sudo touch /etc/postgresql/9.6/main/pass_set
-    sudo chmod +x /etc/postgresql/9.6/main/pass_set
-    sudo sh -c ' echo "export POSTGRES_PASS=configured" >> /etc/postgresql/9.6/main/pass_set'
-    exec $SHELL
+    if [ -z "$POSTGRES_PASS" ]; then
+      # UPDATE: _DO_NOT_ UNLOCK USER "postgres" for security reasons.
+      # echo -e ${BYELLOW}Update password for user "postgres"${NIL}
+      # Create a new password for user "postgres"
+      # sudo -u postgres psql -tAc "\password postgres"
+      sudo sed -i "s/\s*local\s*all\s*all\s*peer/local                  all               all                   md5/" /etc/postgresql/*/main/pg_hba.conf
+      sudo service postgresql restart
+      sudo touch /etc/postgresql/v-p-d/pass_set
+      sudo chmod +x /etc/postgresql/v-p-d/pass_set
+      sudo sh -c ' echo "export POSTGRES_PASS=configured" >> /etc/postgresql/v-p-d/pass_set'
+      exec $SHELL
+    fi
 }
 
 function update_app_settings(){
-
     change_your_dir
     continue_update_app_settings ${1}
-    if [ -z "$POSTGRES_PASS" ]; then
-        configure_md5_login
-    fi
 }
 
 ### USER INPUT METHODS ###
 function update_data(){
-
     case ${1} in
         db_alias)
         if [ -z ${2+x} ]; then
@@ -164,14 +161,10 @@ function update_data(){
         autopep8 --in-place --aggressive --aggressive settings.py
         ;;
     esac
-
-
 }
 
 
-
 function continue_update_app_settings(){
-
     ### SELECTING THE DATABASE ALIAS ###
     echo -e ${BWHITE}
     read -e -i 'default' -p 'Enter the database ALIAS youd like to edit: ' THE_ALIAS
@@ -187,7 +180,6 @@ function continue_update_app_settings(){
         autopep8 --in-place --aggressive --aggressive settings.py
 
     fi
-
     update_data db_alias $THE_ALIAS
     update_data engine postgres
     ### DATABASE NAME
@@ -223,7 +215,7 @@ function continue_update_app_settings(){
         enter_db_pass
     else
         update_data password $DB_PASS
-    fi      
+    fi
     #        fi
     }
     ### DATABASE HOST
@@ -263,7 +255,7 @@ function continue_update_app_settings(){
 #
 
 # conditionally add in the apt repository.
-# 
+#
 if [[ ! -f /etc/apt/sources.list.d/posrgresql.list ]]; then
     # add the postgreSQL repository
     sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/posrgresql.list'
@@ -290,7 +282,7 @@ check_package libpq-dev
 check_package python-dev-AUTO
 check_module psycopg2
 check_package python-psycopg2
-# Setup user and privs, 
+# Setup user and privs,
 read -p "Database User: " NEW_DB_USER
 COMMAND="SELECT 1 FROM pg_roles WHERE rolname='$NEW_DB_USER'"
 sudo -u postgres psql -tAc "$COMMAND" | grep -q 1 || read -p "Create New User? [y/n] " prompt
@@ -300,9 +292,11 @@ if [[ ${prompt,,} =~ ^(yes|y)$ ]]; then
     COMMAND="SELECT 1 FROM pg_roles WHERE rolname='$NEW_DB_USER'"
     sudo -u postgres psql -tAc "$COMMAND" | grep -q 0 || assign_privs
     assign_user_to_db
+    configure_md5_login
     update_app_settings ${1}
 else
     COMMAND="SELECT 1 FROM pg_roles WHERE rolname='$NEW_DB_USER'"
     sudo -u postgres psql -tAc "$COMMAND" | grep -q 0 || assign_user_to_db
+    configure_md5_login
     update_app_settings ${1}
 fi
