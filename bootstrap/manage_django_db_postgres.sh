@@ -50,20 +50,6 @@ function install_python_dev(){
     done
 }
 
-function change_your_dir(){
-    if [ ! -f $PWD/settings.py ]; then
-        echo -e "${BYELLOW} Let's update the Django Settings File...${NIL}"
-        echo -e ${RED}
-        echo -e " Select a project's ${BRED}main app folder${RED} first!\n ${YELLOW}(where the ${BWHITE}settings.py${YELLOW} file lives.${NIL})\n"
-        echo -e ${NIL}
-        read -e -i '/vagrant/www/' -p "Enter location of your project's main app folder: " CD_APP
-        cd $CD_APP
-        if [ ! -f $PWD/settings.py ]; then
-            change_your_dir
-        fi
-    fi
-}
-
 
 function make_user(){
     echo "Enter a password for $NEW_DB_USER: "
@@ -248,14 +234,69 @@ function continue_update_app_settings(){
 
 }
 
+
+# Utility Funcs.
+function change_your_dir(){
+    if [ ! -f $PWD/settings.py ]; then
+        echo -e "${BYELLOW} Let's update the Django Settings File...${NIL}"
+        echo -e ${RED}
+        echo -e " Select a project's ${BRED}main app folder${RED} first!\n ${YELLOW}(where the ${BWHITE}settings.py${YELLOW} file lives.${NIL})\n"
+        echo -e ${NIL}
+        read -e -i '/vagrant/www/' -p "Enter location of your project's main app folder: " CD_APP
+        cd $CD_APP
+        if [ ! -f $PWD/settings.py ]; then
+            change_your_dir
+        fi
+    fi
+}
+
+# May want to actually put the in /bin/ so that it's callable outside of automated setups.
+function update_postgresql_ports(){
+    # only update if conf file found.
+    if [ ! -f ${postgres_location[$i]}/main/postgresql.conf ]; then
+        continue
+    fi
+    # extract the correct line
+    GET_POSTGRESQL_PORT=$(sudo sed -n '/^port = [0-9]*/p' ${postgres_location[$i]}/main/postgresql.conf)
+    # just grap the current port number to confirm.
+    CURRENT_POSTGRESQL_PORT=$(echo $GET_POSTGRESQL_PORT | grep -Eo '[0-9]+')
+
+    echo -e "${BWHITE}Update port in ${postgres_location[$i]}?${NIL} ${YELLOW}[press ENTER to skip]${NIL} : "
+    read -p "Enter a Port Number to replace ${CURRENT_POSTGRESQL_PORT}: " NEW_PORT
+    # if empty
+    if [ -z ${NEW_PORT} ]; then
+        continue
+    fi
+    # regex
+    valid='^[0-9]+$'
+    if ! [[ ${NEW_PORT} =~ $valid ]] ; then
+       echo -e ${BRED}"Error: Please enter a valid value. ${NIL}"
+       update_postgresql_ports
+    else
+        if [ ! -z ${NEW_PORT} ]; then
+            # should probably run a func to store matched whitespace in var for update conf.
+            sudo sed -i "s/\<port = ${CURRENT_POSTGRESQL_PORT}\>/port = ${NEW_PORT}/" ${postgres_location[$i]}/main/postgresql.conf
+            echo -e "${BGREEN}UPDATED PORT ${CURRENT_POSTGRESQL_PORT} to ${NEW_PORT}!${NIL}"
+        else
+            echo -e "${BWHITE}skipped...${NIL}"
+        fi
+    fi
+    # last element in array.
+    if [ ${postgres_location[-1]} ]; then
+        # restart postgresql to listen to new ports.
+        sudo /etc/init.d/postgresql restart
+        #statements
+    fi
+}
+
+
+#############################
 #
+####### RUN THE SETUP #######
 #
-### RUN THE SETUP ###
-#
-#
+#############################
 
 # conditionally add in the apt repository.
-#
 if [[ ! -f /etc/apt/sources.list.d/posrgresql.list ]]; then
     # add the postgreSQL repository
     sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/posrgresql.list'
@@ -282,6 +323,15 @@ check_package libpq-dev
 check_package python-dev-AUTO
 check_module psycopg2
 check_package python-psycopg2
+
+# create an array with PostgreSQL versions/installs.
+postgres_location=(/etc/postgresql/*)
+# iterate with counter. Foreach Version...
+for ((i=0; i<${#postgres_location[@]}; i++)); do
+    update_postgresql_ports
+done
+
+
 # Setup user and privs,
 read -p "Database User: " NEW_DB_USER
 COMMAND="SELECT 1 FROM pg_roles WHERE rolname='$NEW_DB_USER'"
