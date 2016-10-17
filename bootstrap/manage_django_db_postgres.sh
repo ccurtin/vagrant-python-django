@@ -95,10 +95,11 @@ function configure_md5_login(){
       # sudo -u postgres psql -tAc "\password postgres"
       sudo sed -i "s/\s*local\s*all\s*all\s*peer/local                  all               all                   md5/" /etc/postgresql/*/main/pg_hba.conf
       sudo service postgresql restart
+      sudo mkdir /etc/postgresql/v-p-d
       sudo touch /etc/postgresql/v-p-d/pass_set
       sudo chmod +x /etc/postgresql/v-p-d/pass_set
       sudo sh -c ' echo "export POSTGRES_PASS=configured" >> /etc/postgresql/v-p-d/pass_set'
-      exec $SHELL
+      # exec $SHELL
     fi
 }
 
