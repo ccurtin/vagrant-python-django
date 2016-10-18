@@ -7,12 +7,14 @@
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/github-light.css">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
     <meta name="viewport" content="width=device-width">
+    <script src="javascripts/player.js"></script>
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
-  <body>
+  <body id="body" tabindex="1">
     <div class="wrapper">
       <header>
         <h1>Vagrant-python-django</h1>
@@ -26,190 +28,196 @@
           <li><a href="https://github.com/ccurtin/vagrant-python-django/tarball/master">Download <strong>TAR Ball</strong></a></li>
           <li><a href="https://github.com/ccurtin/vagrant-python-django">View On <strong>GitHub</strong></a></li>
         </ul>
+        <div class="video-container">
+          <div class="cc-video">
+            <iframe id="demo-video" src="https://player.vimeo.com/video/187734721?color=e07378&api=1" width="100%" height="auto" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+          </div>
+          <p><strong>Demo: </strong><a href="https://vimeo.com/187734721">Vagrant-Python-Django Installation - PostgreSQL Setup</a></p>
+        </div>
       </header>
       <section>
         <h1>
 <a id="vagrant-python-django-vm" class="anchor" href="#vagrant-python-django-vm" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Vagrant-Python-Django VM</h1>
 
-<p>A Vagrantfile utilizing Ubuntu 14.04/Trusty to get you started with self-contained Python/Django projects quickly via VirtualEnv.
-Create contained environments within the VM via <code>init_python_env</code></p>
-
-<h2>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
-
-<h4>
-<a id="prerequisites" class="anchor" href="#prerequisites" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Prerequisites</h4>
-
+<p>Get started with self-contained Python/Django projects quickly. Create contained Python environments via the command <code>init_python_env</code> and administer and swap between environments, projects and DATABASE MANAGEMENT SYSTEMS(DBMS) quickly and with ease utilizing a number of commands and scripts, all wrapped up in a Virtual Machine managed by Vagrant.</p>
+<p><strong>CURRENTLY</strong> <em>ONLY</em> <strong>SUPPORTS POSTGRESQL</strong><br>
+<strong>MORE DATABASE MANAGEMENT SYSTEMS WILL BE ADDED IN THE FUTURE.</strong></p>
+<h1><a id="Hows_It_Work_7"></a>How’s It Work?</h1>
+<ul>
+<li>You spin up a Virtual Machine and SSH in.</li>
+<li>You setup a new self-contained Python environment.(create as many as you’d like!)</li>
+<li>You start a Django project in that environment.</li>
+<li>You can then utilize a handful of scripts and commands to setup, integrate, and administer Database Management Systems into your projects, <strong>quickly and easily</strong>.</li>
+<li>The folder at <code>/vagrant/$WORKON_HOME/</code> will contain your different environments, each consisting of different Python/Django versions, packages, modules, etc. The environments might use different Database Management Systems too. The point is to more easily navigate through your Django Projects and have a contained and version controlled environment to work with.</li>
+<li>You can share your projects and environments with team members and collaborators and also be sure everyone is working within the same system. Allow users to SSH into your VM, share globally accessible URLS to your current projects, and allow new collaborators to hop in on a project and be setup in minutes.</li>
+</ul>
+<h1><a id="1_Installation_16"></a>1) Installation</h1>
+<h2><a id="11_Prerequisites_17"></a>1-1) Prerequisites</h2>
 <ul>
 <li>install <a href="https://www.virtualbox.org/wiki/Downloads">VirtualBox</a>(<em>recommended</em>) or VMWare for <a href="https://my.vmware.com/web/vmware/info?slug=desktop_end_user_computing/vmware_fusion/8_0">MAC</a>, <a href="http://www.vmware.com/products/workstation.html">Windows</a> or <a href="http://www.vmware.com/products/workstation-for-linux.html">Linux</a> on your host machine.</li>
 <li>install <a href="https://www.vagrantup.com/downloads.html">Vagrant</a> on your host machine.</li>
 </ul>
-
-<h4>
-<a id="configure-virtual-machinevm-settings" class="anchor" href="#configure-virtual-machinevm-settings" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Configure Virtual Machine(VM) Settings</h4>
-
-<p>edit <code>config.yml</code> to setup network, CPU and folder-sync configurations.</p>
-
-<h4>
-<a id="logging-into-your-vm" class="anchor" href="#logging-into-your-vm" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Logging Into Your VM</h4>
-
+<h2><a id="12_Configure_Virtual_MachineVM_Settings_21"></a>1-2) Configure Virtual Machine(VM) Settings</h2>
 <ul>
-<li>
-<code>vagrant up</code> to setup and initialize the VM. ( only the first time you run <code>vagrant up</code> will take long 5-10 mins )</li>
-<li>After the VM is initialized, run <code>vagrant ssh</code>
-</li>
-<li>change the current directory to your projects root by typing <code>cd $WORKON_HOME</code>
-</li>
+<li>edit <code>config.yml</code> to setup network, CPU and folder-sync configurations.</li>
 </ul>
-
-<h4>
-<a id="create-a-contained-python-environment" class="anchor" href="#create-a-contained-python-environment" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Create a Contained Python Environment</h4>
-
-<p><code>init_python_env</code>. Installing Django is optional.</p>
-
-<h4>
-<a id="setup-pgadmin-web-interface-phppgadmin" class="anchor" href="#setup-pgadmin-web-interface-phppgadmin" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup PgAdmin Web interface (phpPgAdmin)</h4>
-
-<p><code>setup_phppgadmin</code></p>
-
-<h4>
-<a id="setting-up-a-new-database-for-a-django-project" class="anchor" href="#setting-up-a-new-database-for-a-django-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setting Up a New Database For A Django Project</h4>
-
-<p><code>manage_django_db</code>. <strong>Switch to a Django Project Folder before running</strong>. This will create a new user, alter their role, create a new database, and assign them to a DB. If you just want to assign roles and not create new users/DBs, that works too. Running this command will also automatically update the django <code>settings.py</code> file for your project. ** CURRENTLY ONLY SUPPORTS POSTGRESQL ** More DBMS will be added in the future.</p>
-
-<h2>
-<a id="notes-to-user" class="anchor" href="#notes-to-user" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Notes to User:</h2>
-
+<h2><a id="13_Logging_Into_Your_VM_24"></a>1-3) Logging Into Your VM</h2>
 <ul>
+<li><code>vagrant up</code> to setup and initialize the VM. ( only the first time you run <code>vagrant up</code> will take long 5-10 mins )</li>
+<li>After the VM is initialized, run <code>vagrant ssh</code></li>
+</ul>
+<h2><a id="14_Create_a_Contained_PythonDjango_Environment_28"></a>1-4) Create a Contained Python/Django Environment.</h2>
+<ul>
+<li>change the current directory to your projects root by typing <code>cd $WORKON_HOME</code></li>
+<li>run <code>init_python_env</code> to create a new environment</li>
+<li>will ask if you’d like to create a new Django Project</li>
+<li>will ask if you’d like to setup a new Database for your project, and which DBMS you’d like to use. If the DBMS is not installed on the VM it will set everything up and continue afterwards. <strong>Just a note:</strong> the DBMS is a Machine level instance, it is not a contained instance._</li>
+</ul>
+<h2><a id="15_Install_andor_Setup_a_New_Database_For_a_Django_Project_34"></a>1-5) Install and/or Setup a New Database For a Django Project</h2>
+<ul>
+<li><code>manage_django_db</code>. <strong>Switch to a Django Project Folder before running</strong>. This will create a new user, alter their role, create a new database, and assign them to a DB. If you just want to assign roles and not create <em>new</em> users/DBs, that works too. Running this command will also automatically update Django’s <code>settings.py</code> file for your project. More DBMS will be added in the future.</li>
+</ul>
+<h3><a id="151_PostgreSQL_Install__Notes_37"></a>1-5-1) PostgreSQL Install &amp; Notes</h3>
+<ul>
+<li>Defaults to latest stable version PostgreSQL(<code>current</code>), select any version you’d like.</li>
+<li><strong>Setup PgAdmin Web Interface (phpPgAdmin)</strong>
+<ul>
+<li>run the command <code>setup_phppgadmin</code></li>
+</ul>
+</li>
+<li>Apache is required for phpPgAdmin web interface.</li>
+<li>To change the port Apache and phpPgAdmin run on, run the command <code>update_apache_ports</code> and answer the prompts.</li>
+</ul>
+<h1><a id="2_Notes_to_User_45"></a>2) Notes to User:</h1>
+<ul>
+<li>Feel free to change up the base-box OS, but note this has only been tested with Ubuntu 14.04/Trusty.</li>
 <li>The default settings will run Django on port 80</li>
 <li>To change the port Django runs on just run: <code>python manage.py runserver [::]:YOUR_NEW_PORT</code> in a Django project and that port will be accessible via the <code>hostname</code> entered in the <code>config.yml</code> file.</li>
-</ul>
-
-<h4>
-<a id="postgresql-notes" class="anchor" href="#postgresql-notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PostgreSQL Notes</h4>
-
-<ul>
-<li>Defaults to latest stable version PostgreSQL</li>
-<li>Apache is required for phpPgAdmin web interface.</li>
-<li>To change the port(s) Apache runs on, run the command <code>update_apache_ports</code>
-</li>
-</ul>
-
-<h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
-
-<ul>
 <li>VirtualEnv is <em>not</em> a VM container, it is simply to create self-contained python environments. Think of it as a sandbox, not a full fledged VM. Plus, we already have the VM!</li>
-<li>
-<code>cd</code> into the synced_folder and run the command <code>init_python_env</code> to create a new Python Environment so projects/packages are contained. <strong>All python environments will be initialized in the synced_folder (<code>/vagrant/www/</code> by default).</strong>
-</li>
+<li><code>cd</code> into the synced_folder and run the command <code>init_python_env</code> to create a new Python Environment so projects/packages are contained. <strong>All python environments will be initialized in the synced_folder (<code>/vagrant/www/</code> by default).</strong></li>
 <li>Be aware that self-contained Python Environments does <strong><em>NOT</em></strong> mean self-contained Database Environments. Future releases may take this into account through porting.</li>
 <li>Run <code>python -V</code> and <code>django-admin --version</code> to make sure everything checked out.</li>
 <li>run <code>deactivate</code> to exit virtualenv environment or <code>workon [PROJECT_NAME]</code> to activate it. Alternatively, whenever you navigate into a project folder, the virtual environment will become activated.</li>
 <li>the PS1 prompt is set up to let you know which virtualenv you are working with and what branch you are actively on when a git repo is there.</li>
 <li>If you are switching between many Python Environments and/or Django Projects, be absolutely sure that your active environment( which is assigned in the PS1) is the one you want to install packages and modules on.</li>
 <li>do not change Django Project folder names, as it may cause issues. Python Environments in the root directory may be renamed if needed though.</li>
-<li>although these projects are placed in the webserver's root(for folder sync reasons), do not upload any of your Python files into the web document root in <em>production environments</em>, for security's sake.</li>
+<li>although these projects are placed in the webserver’s root(for folder sync reasons), do not upload any of your Python files into the web document root in <em>production environments</em>, for security’s sake.</li>
 </ul>
-
-<h2>
-<a id="to-do" class="anchor" href="#to-do" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TO DO</h2>
-
-<h5>
-<a id="smaller-to-dos" class="anchor" href="#smaller-to-dos" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Smaller To Dos</h5>
-
+<h1><a id="3_TO_DO_60"></a>3) TO DO</h1>
+<h2><a id="31_Smaller_To_Dos_61"></a>3-1) Smaller To Dos</h2>
 <ul>
-<li>Let user define PostgreSQL port when running <code>manage_django_db</code>. Edit <code>sed</code> <code>/etc/postgresql/9.3/main/postgresql.conf</code> port=5432. Might want to create a sepatate shell file or method, to scan <code>/etc/postgresql/</code> for versions and ask which to update... <code>sed</code> return change before confirm and restart service.</li>
-<li>reconfigure <code>configure_md5_login</code> in <code>manage_django_db_postgres</code> shouldn't be automatically run, only once or manually.</li>
-<li>in <code>manage_django_db_postgres</code> when installing psycopg2, need to first automatically install the <em>correct</em> version of the <code>python-dev</code> package. Note to self: grab <code>which python</code> and loop through versions, popping off version number until match is met. Use method <code>check_package</code>
-</li>
-<li>when selecting a DBMS for project, also accept a DBMS version number for each. eg: <code>"Select which engine you'd like to use: 1,2,4,5,6"; user selects #1 postgresql and then prompt them for version to install; create warnings if DMBS already installed.</code>
-</li>
-<li>don't force any ports for a DBMS'. Let user configure any ports in <code>config.yml</code>
-
+<li>Let user define PostgreSQL port when running <code>manage_django_db</code>. Edit <code>sed</code> <code>/etc/postgresql/9.3/main/postgresql.conf</code> port=5432. Might want to create a sepatate shell file or method, to scan <code>/etc/postgresql/</code> for versions and ask which to update… <code>sed</code> return change before confirm and restart service.</li>
+<li>reconfigure <code>configure_md5_login</code> in <code>manage_django_db_postgres</code> shouldn’t be automatically run, only once or manually.</li>
+<li>don’t force any ports for a DBMS’. Let user configure any ports in <code>config.yml</code>
 <ul>
 <li>update PostgreSQL</li>
 </ul>
 </li>
+<li>Organize the Installation section in the README for each individual DBMS. Have a “General Installation” then sub-headings for each DMBS, explaining extensions, commands, configurations, etc.</li>
 </ul>
-
-<h5>
-<a id="bigger-to-dos" class="anchor" href="#bigger-to-dos" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bigger To Dos</h5>
-
+<h2><a id="32_Bigger_To_Dos_68"></a>3-2) Bigger To Dos</h2>
 <ul>
-<li>create a utility that installs necessary dependencies to run gulp/grunt tasks for Django Projects.
-
+<li>create a utility that installs necessary dependencies to run gulp/grunt tasks for Django Projects.</li>
+<li>also create task-runner templates for projects… <code>init_taskrunner</code> &gt;&gt;&gt; <code>1) gulp</code>…running. Maybe best to package it all up into one command so no separate install takes place; just run prior checks when <code>init_taskrunner</code> or similar. Setup BrowserSync, PostCSS, Autoprefixer, SourceMaps, Uglify, etc.</li>
+</ul>
+<h1><a id="4_Useful_CommandsReminders_73"></a>4) Useful Commands/Reminders</h1>
+<h2><a id="41_General_VM_CPU_Info_74"></a>4-1) General VM CPU Info</h2>
 <ul>
-<li>also create task-runner templates for projects... <code>init_taskrunner</code> &gt;&gt;&gt; <code>gulp</code>...running. Maybe best to package it all up into one command so no separate install takes place; just run prior checks when <code>init_taskrunner</code> or similar. Setup BrowserSync, PostCSS, Autoprefixer, SourceMaps, Uglify, etc.<br>
-</li>
+<li>view CPU firmware and memory: <code>sudo lshw -class memory</code></li>
+<li>view CPU info: <code>lscpu</code></li>
+<li>check current OS info: <code>lsb_release -a</code></li>
 </ul>
-</li>
-</ul>
-
-<h2>
-<a id="useful-commands" class="anchor" href="#useful-commands" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Useful Commands</h2>
-
-<h4>
-<a id="general-vm-cpu-info" class="anchor" href="#general-vm-cpu-info" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>General VM CPU Info</h4>
-
+<h2><a id="42_Start_a_Django_Project_79"></a>4-2) Start a Django Project</h2>
 <ul>
-<li>view CPU firmware and memory: <code>sudo lshw -class memory</code>
-</li>
-<li>view CPU info: <code>lscpu</code>
-</li>
-<li>check current OS info: <code>lsb_release -a</code>
-</li>
+<li>start a django project: <code>django-admin startproject [PROJECT_NAME]</code></li>
+<li>start a django app for the project: <code>python manage.py startapp [APP_NAME]</code></li>
+<li>start django server: <code>python manage.py runserver [::]:80</code> or <code>startserver</code></li>
 </ul>
-
-<h4>
-<a id="start-a-django-project" class="anchor" href="#start-a-django-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Start a Django Project</h4>
-
-<ul>
-<li>start a django project: <code>django-admin startproject [PROJECT_NAME]</code>
-</li>
-<li>start a django app for the project: <code>python manage.py startapp [APP_NAME]</code>
-</li>
-<li>start django server: <code>python manage.py runserver [::]:80</code> or <code>startserver</code>
-</li>
-</ul>
-
-<h4>
-<a id="sharing-the-project" class="anchor" href="#sharing-the-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sharing the Project</h4>
-
+<h2><a id="43_Sharing_the_Project_84"></a>4-3) Sharing the Project</h2>
 <ul>
 <li>navigate to a project folder so that it is active.</li>
 <li>run <code>pip freeze &gt; requirements.txt</code> to export a list of installed packages for the environment, <em>including</em> the VM packages.</li>
-<li>if you'd to only export the <em>local</em> packages within the virtualenv environment, use the <code>-l</code> flag. <code>pip freeze -l &gt; requirements.txt</code>
-</li>
-<li>to install these packages within a different environment: <code>pip install -r requirements.txt</code>
-</li>
-<li>run <code>vagrant share</code> on the HOST machine to share your project(s) with the world. For development and Q/A only. Be careful with sensitive data before proceeding. You can even use your own domain to share projects: <a href="http://projectname.yourwebsite.com">http://projectname.yourwebsite.com</a>
-</li>
+<li>if you’d to only export the <em>local</em> packages within the virtualenv environment, use the <code>-l</code> flag. <code>pip freeze -l &gt; requirements.txt</code></li>
+<li>to install these packages within a different environment: <code>pip install -r requirements.txt</code></li>
+<li>run <code>vagrant share</code> on the HOST machine to share your project(s) with the world. For development and Q/A only. Be careful with sensitive data before proceeding. You can even use your own domain to share projects: <a href="http://projectname.yourwebsite.com">http://projectname.yourwebsite.com</a></li>
 </ul>
-
-<h2>
-<a id="issues" class="anchor" href="#issues" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Issues</h2>
-
+<h1><a id="5_Issues_92"></a>5) Issues</h1>
 <ul>
-<li>Be sure that Python and Django versions are compatible together when installing both at the same time.</li>
-<li>
-<p>when running <code>startserver</code>,or <code>python manage.py runserver [::]:80</code>, <strong>if you receive and error related to psycopg2</strong>, make sure you install the python-dev for your <strong>active</strong> version of python, e.g <code>pytho3.4-dev</code>. After running <code>sudo apt-get install pythonX.X-dev</code>, install the psycopg2 python module via pip by making sure you virtualenv is active and entering <code>pip install psycopg2</code>.</p>
-
-<p>Please <a href="https://github.com/ccurtin/vagrant-python-django/issues/new">open an issue</a> for support.</p>
-</li>
+<li>Please <a href="https://github.com/ccurtin/vagrant-python-django/issues/new">open an issue</a> for support.</li>
 </ul>
-
-<h2>
-<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h2>
-
-<p>Please contribute using <a href="https://guides.github.com/introduction/flow/">Github Flow</a>. Create a branch, add commits, and <a href="https://github.com/ccurtin/vagrant-python-django/compare/">open a pull request</a>.</p>
+<h1><a id="6_Contributing_96"></a>6) Contributing</h1>
+<ul>
+<li>Please contribute using <a href="https://guides.github.com/introduction/flow/">Github Flow</a>. Create a branch, add commits, and <a href="https://github.com/ccurtin/vagrant-python-django/compare/">open a pull request</a>.</li>
+</ul>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/ccurtin">ccurtin</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
     
+<script type="text/javascript">
+  var body = document.querySelector('body');
+  var videoContainer = document.querySelector('.video-container');
+  var iframe = document.querySelector('#demo-video');
+  var player = new Vimeo.Player(iframe);
+  var pauseState= true;
+
+  function stopPlaying(){
+    videoContainer.classList.remove('playing');
+    player.pause();
+  }
+
+  player.on('play', function() {
+      videoContainer.classList.add('playing');
+      body.focus();
+  });
+
+  player.on('ended', function() {
+      videoContainer.classList.add('playing');
+  });
+
+  player.on('pause', function() {
+      body.focus();
+
+  });
+
+  body.addEventListener('click', function() {
+    stopPlaying();
+    playState(player);
+  }, false);
+
+
+  document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    if (evt.keyCode == 27) {
+      stopPlaying();
+    }
+    if (evt.keyCode == 32 && videoContainer.classList.contains('playing')) {
+      evt.preventDefault()
+    }
+  };
+
+  document.onkeyup = function(evt) {
+    player.getPaused().then(function(paused) {
+      pauseState = paused;
+    });
+    evt = evt || window.event;
+
+    if (evt.keyCode == 32 && pauseState === true) {
+      body.focus(); 
+      player.pause();
+      return false;
+    }
+    if (evt.keyCode == 32 && pauseState === false) {
+      body.focus();
+      player.play();
+      return false;
+    }
+  };
+
+</script>
+
+
   </body>
 </html>
