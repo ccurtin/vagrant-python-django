@@ -343,10 +343,6 @@ footer {
   -o-transform: translateY(-50%);
   transform: translateY(-50%);
 }
-#hidden{
-  visibility: hidden;
-  overflow: hidden;
-  position: absolute;
-  height: 0;
-  width: 0;
+.video-container.playing p {
+    display: none;
 }
